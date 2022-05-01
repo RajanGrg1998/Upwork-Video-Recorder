@@ -1,0 +1,121 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:video_recorder_app/controller/clip_controller.dart';
+import 'package:video_recorder_app/helpers/trimmer/src/trim_editor.dart';
+import 'package:video_recorder_app/helpers/trimmer/src/trimmer.dart';
+import 'package:video_recorder_app/helpers/trimmer/src/video_viewer.dart';
+
+class SingleTrimPage extends StatefulWidget {
+  const SingleTrimPage({Key? key, required this.path}) : super(key: key);
+  final String path;
+
+  @override
+  State<SingleTrimPage> createState() => _SingleTrimPageState();
+}
+
+class _SingleTrimPageState extends State<SingleTrimPage> {
+  final Trimmer _trimmer = Trimmer();
+  double _startValue = 0.0;
+  double _endValue = 0.0;
+
+  bool _isPlaying = false;
+  bool _progressVisibility = false;
+
+  @override
+  void initState() {
+    _loadVideo();
+    super.initState();
+  }
+
+  Future<void> _loadVideo() async {
+    await _trimmer.loadVideo(videoFile: File(widget.path));
+  }
+
+  Future<void> _saveVideo() async {
+    setState(() {
+      _progressVisibility = true;
+    });
+
+    await _trimmer.saveTrimmedVideo(
+      startValue: _startValue,
+      endValue: _endValue,
+      onSave: (outputPath) async {
+        setState(() {
+          _progressVisibility = false;
+        });
+        debugPrint('OUTPUT PATH: $outputPath');
+        Provider.of<ClipController>(context, listen: false)
+            .addTrimmedSession(outputPath!);
+
+        // await GallerySaver.saveVideo(outputPath!);
+        // File(outputPath).deleteSync();
+        Navigator.of(context).pop();
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _trimmer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        actions: [
+          ElevatedButton(
+            onPressed: _saveVideo,
+            child: Text('Save'),
+          )
+        ],
+      ),
+      body: WillPopScope(
+        onWillPop: () async {
+          if (Navigator.of(context).userGestureInProgress) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        child: Column(
+          children: [
+            Visibility(
+              visible: _progressVisibility,
+              child: const LinearProgressIndicator(
+                backgroundColor: Colors.red,
+              ),
+            ),
+            Expanded(
+              child: VideoViewer(trimmer: _trimmer),
+            ),
+            Center(
+              child: TrimEditor(
+                trimmer: _trimmer,
+                viewerHeight: 50.0,
+                viewerWidth: MediaQuery.of(context).size.width,
+                maxVideoLength: const Duration(hours: 10),
+                onChangeStart: (value) {
+                  _startValue = value;
+                },
+                onChangeEnd: (value) {
+                  _endValue = value;
+                },
+                onChangePlaybackState: (value) {
+                  setState(() {
+                    _isPlaying = value;
+                  });
+                },
+              ),
+            ),
+            SizedBox(height: 130),
+          ],
+        ),
+      ),
+    );
+  }
+}
