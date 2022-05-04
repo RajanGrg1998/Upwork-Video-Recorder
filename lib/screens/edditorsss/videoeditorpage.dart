@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:helpers/helpers/transition.dart';
@@ -19,12 +20,8 @@ class VideoEditor extends StatefulWidget {
 }
 
 class _VideoEditorState extends State<VideoEditor> {
-  // final _exportingProgress = ValueNotifier<double>(0.0);
-  // final _isExporting = ValueNotifier<bool>(false);
   final double height = 60;
 
-  bool _exported = false;
-  String _exportText = "";
   late VideoEditorController _controller;
 
   @override
@@ -37,43 +34,9 @@ class _VideoEditorState extends State<VideoEditor> {
 
   @override
   void dispose() {
-    // _exportingProgress.dispose();
-    // _isExporting.dispose();
     _controller.dispose();
     super.dispose();
   }
-
-  // void _openCropScreen() => Navigator.push(
-  //     context,
-  //     MaterialPageRoute<void>(
-  //         builder: (BuildContext context) =>
-  //             CropScreen(controller: _controller)));
-
-  // void _exportVideo() async {
-  //   _exportingProgress.value = 0;
-  //   _isExporting.value = true;
-  //   // NOTE: To use `-crf 1` and [VideoExportPreset] you need `ffmpeg_kit_flutter_min_gpl` package (with `ffmpeg_kit` only it won't work)
-  //   await _controller.exportVideo(
-  //     // preset: VideoExportPreset.medium,
-  //     // customInstruction: "-crf 17",
-  //     // onProgress: (stats, value) => _exportingProgress.value = value,
-  //     onCompleted: (file) {
-  //       _isExporting.value = false;
-  //       if (!mounted) return;
-  //       if (file != null) {
-  //         Provider.of<ClipController>(context, listen: false)
-  //             .addTrimmedSession(file.path);
-  //         _exportText = "Video success export!";
-  //       } else {
-  //         _exportText = "Error on export video :(";
-  //       }
-
-  //       setState(() => _exported = true);
-  //       _exported = false;
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  // }\
 
   void _exportVideo() async {
     // _isExporting.value = true;
@@ -86,76 +49,111 @@ class _VideoEditorState extends State<VideoEditor> {
           Provider.of<ClipController>(context, listen: false)
               .addTrimmedSession(file.path);
           EasyLoading.showSuccess('Video Trimmed!');
-          _exportText = "Video success export!";
-          EasyLoading.dismiss();
-        } else {
-          _exportText = "Error on export video :(";
-        }
-        Navigator.pop(context);
 
-        _exported = false;
+          EasyLoading.dismiss();
+        } else {}
+        Navigator.pop(context);
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.black,
+        padding: EdgeInsetsDirectional.only(start: 5, end: 16),
+        middle: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            CupertinoButton(
+              padding: EdgeInsets.symmetric(vertical: 5),
+              onPressed: () =>
+                  _controller.rotate90Degrees(RotateDirection.left),
+              child: Icon(
+                Icons.rotate_left,
+                color: Colors.white,
+              ),
+            ),
+            CupertinoButton(
+              padding: EdgeInsets.symmetric(vertical: 5),
+              onPressed: () =>
+                  _controller.rotate90Degrees(RotateDirection.right),
+              child: Icon(
+                Icons.rotate_right,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        trailing: CupertinoButton(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(
+              'Trim',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () {
+              _exportVideo();
+            }),
+        leading: CupertinoNavigationBarBackButton(
+          color: Colors.white,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
       backgroundColor: Colors.black,
-      body: _controller.initialized
+      child: _controller.initialized
           ? SafeArea(
-              child: Stack(
+              child: Column(
                 children: [
-                  Column(
-                    children: [
-                      _topNavBar(),
-                      Expanded(
-                        child: DefaultTabController(
-                          length: 2,
-                          child: Column(
+                  Expanded(
+                    child: DefaultTabController(
+                      length: 2,
+                      child: Column(
+                        children: [
+                          Expanded(
+                              child: TabBarView(
+                            physics: const NeverScrollableScrollPhysics(),
                             children: [
-                              Expanded(
-                                  child: TabBarView(
-                                physics: const NeverScrollableScrollPhysics(),
-                                children: [
-                                  Stack(alignment: Alignment.center, children: [
-                                    CropGridViewer(
-                                      controller: _controller,
-                                      showGrid: false,
-                                    ),
-                                    AnimatedBuilder(
-                                      animation: _controller.video,
-                                      builder: (_, __) => OpacityTransition(
-                                        visible: !_controller.isPlaying,
-                                        child: GestureDetector(
-                                          onTap: _controller.video.play,
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(Icons.play_arrow,
-                                                color: Colors.black),
-                                          ),
+                              Stack(alignment: Alignment.center, children: [
+                                CropGridViewer(
+                                  controller: _controller,
+                                  showGrid: false,
+                                ),
+                                AnimatedBuilder(
+                                  animation: _controller.video,
+                                  builder: (_, __) => OpacityTransition(
+                                    visible: !_controller.isPlaying,
+                                    child: GestureDetector(
+                                      onTap: _controller.video.play,
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
                                         ),
+                                        child: const Icon(Icons.play_arrow,
+                                            color: Colors.black),
                                       ),
                                     ),
-                                  ]),
-                                  CoverViewer(controller: _controller)
-                                ],
-                              )),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: _trimSlider(),
-                              ),
-                              _customSnackBar(),
+                                  ),
+                                ),
+                              ]),
+                              CoverViewer(controller: _controller)
                             ],
+                          )),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: _trimSlider(),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
@@ -171,35 +169,23 @@ class _VideoEditorState extends State<VideoEditor> {
         child: Row(
           children: [
             Expanded(
-              child: IconButton(
+              child: CupertinoButton(
                 onPressed: () =>
                     _controller.rotate90Degrees(RotateDirection.left),
-                icon: const Icon(Icons.rotate_left),
+                child: const Icon(Icons.rotate_left),
               ),
             ),
             Expanded(
-              child: IconButton(
+              child: CupertinoButton(
                 onPressed: () =>
                     _controller.rotate90Degrees(RotateDirection.right),
-                icon: const Icon(Icons.rotate_right),
+                child: const Icon(Icons.rotate_right),
               ),
             ),
-            // Expanded(
-            //   child: IconButton(
-            //     onPressed: _openCropScreen,
-            //     icon: const Icon(Icons.crop),
-            //   ),
-            // ),
-            // Expanded(
-            //   child: IconButton(
-            //     onPressed: _exportCover,
-            //     icon: const Icon(Icons.save_alt, color: Colors.white),
-            //   ),
-            // ),
             Expanded(
-              child: IconButton(
+              child: CupertinoButton(
                 onPressed: _exportVideo,
-                icon: const Icon(Icons.save),
+                child: const Text('Trim'),
               ),
             ),
           ],
@@ -264,24 +250,5 @@ class _VideoEditorState extends State<VideoEditor> {
             horizontalMargin: height / 4),
       )
     ];
-  }
-
-  Widget _customSnackBar() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: SwipeTransition(
-        visible: _exported,
-        axisAlignment: 1.0,
-        child: Container(
-          height: height,
-          width: double.infinity,
-          color: Colors.black.withOpacity(0.8),
-          child: Center(
-            child: Text(_exportText,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ),
-      ),
-    );
   }
 }
