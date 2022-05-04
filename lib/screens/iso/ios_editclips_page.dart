@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:video_recorder_app/controller/clip_controller.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trim_editor.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trimmer.dart';
+import 'package:video_recorder_app/screens/edditorsss/videoeditorpage.dart';
 import 'package:video_recorder_app/screens/iso/ddd.dart';
 import 'package:video_recorder_app/screens/single_trimm_page.dart';
 
@@ -108,8 +109,8 @@ class _CustomSlidersState extends State<CustomSliders> {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) => DemoEditor(
-              path: widget.customSlidersPath,
+            builder: (context) => VideoEditor(
+              file: File(widget.customSlidersPath),
             ),
           ),
         );

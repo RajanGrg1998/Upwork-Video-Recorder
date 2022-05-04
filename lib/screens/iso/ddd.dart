@@ -9,7 +9,6 @@ import 'package:video_recorder_app/controller/clip_controller.dart';
 import 'package:video_recorder_app/helpers/editor/domain/bloc/controller.dart';
 import 'package:video_recorder_app/helpers/editor/ui/crop/crop_grid.dart';
 import 'package:video_recorder_app/helpers/editor/ui/trim/trim_slider.dart';
-import 'package:video_recorder_app/helpers/editor/ui/trim/trim_timeline.dart';
 
 class DemoEditor extends StatefulWidget {
   const DemoEditor({Key? key, required this.path}) : super(key: key);
@@ -189,10 +188,10 @@ class _DemoEditorState extends State<DemoEditor> {
         },
       ),
       TrimSlider(
-          child: TrimTimeline(
-            controller: _controller,
-            // margin: EdgeInsets.only(top: 10),
-          ),
+          // child: TrimTimeline(
+          //   controller: _controller,
+          //   // margin: EdgeInsets.only(top: 10),
+          // ),
           controller: _controller,
           quality: 100,
           height: 50,
