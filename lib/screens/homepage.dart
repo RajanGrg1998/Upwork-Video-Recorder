@@ -397,6 +397,33 @@ class _RecordingPageState extends State<RecordingPage>
                             CustomTimeButton(
                               label: ':30',
                               onPressed: () async {
+                                if (_cameraController!
+                                    .value.isRecordingVideo!) {
+                                  stopVideoRecording();
+
+                                  print('stop recording');
+                                  clipCon.addFullSession(videoPath!);
+                                  print(clipCon.fullSessionList.toString());
+                                  VideoPlayerController controller =
+                                      VideoPlayerController.file(
+                                          File(videoPath!));
+                                  await controller.initialize();
+                                  double duration = controller
+                                      .value.duration.inSeconds
+                                      .toDouble();
+                                  double last30Sec = (duration - 30.0);
+                                  LastClipController().saveLastClipVideo(
+                                      startValue: last30Sec,
+                                      endValue: duration,
+                                      onSave: (outcome) async {
+                                        clipCon.clipedLastSecond(outcome);
+                                        // clipCon.addTrimmedClipped(outcome);
+                                        // await GallerySaver.saveVideo(outcome);
+                                      },
+                                      videoFile: File(videoPath!));
+                                  onVideoRecordButtonPressed();
+                                  print('start recording agian');
+                                }
                                 // if (_cameraController!
                                 //     .value.isRecordingVideo!) {
                                 //   stopVideoRecording();
@@ -435,7 +462,37 @@ class _RecordingPageState extends State<RecordingPage>
                                 // }
                               },
                             ),
-                            CustomTimeButton(label: '1:00', onPressed: () {}),
+                            CustomTimeButton(
+                                label: '1:00',
+                                onPressed: () async {
+                                  if (_cameraController!
+                                      .value.isRecordingVideo!) {
+                                    stopVideoRecording();
+
+                                    print('stop recording');
+                                    clipCon.addFullSession(videoPath!);
+                                    print(clipCon.fullSessionList.toString());
+                                    VideoPlayerController controller =
+                                        VideoPlayerController.file(
+                                            File(videoPath!));
+                                    await controller.initialize();
+                                    double duration = controller
+                                        .value.duration.inSeconds
+                                        .toDouble();
+                                    double last60Sec = (duration - 60.0);
+                                    LastClipController().saveLastClipVideo(
+                                        startValue: last60Sec,
+                                        endValue: duration,
+                                        onSave: (outcome) async {
+                                          clipCon.clipedLastSecond(outcome);
+                                          // clipCon.addTrimmedClipped(outcome);
+                                          // await GallerySaver.saveVideo(outcome);
+                                        },
+                                        videoFile: File(videoPath!));
+                                    onVideoRecordButtonPressed();
+                                    print('start recording agian');
+                                  }
+                                }),
                             CustomTimeButton(label: '3:00', onPressed: () {}),
                           ],
                         ),

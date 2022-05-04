@@ -2,6 +2,7 @@ import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit_config.dart';
 import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -46,6 +47,7 @@ class ClipController extends ChangeNotifier {
     String result = mergedList.join(' ');
     String commandToExecute = '$result -y $outputPath';
     print(commandToExecute);
+    EasyLoading.show(status: 'Video Merging...');
     FFmpegKit.executeAsync(commandToExecute, (session) async {
       final state =
           FFmpegKitConfig.sessionStateToString(await session.getState());
@@ -56,10 +58,15 @@ class ClipController extends ChangeNotifier {
       if (ReturnCode.isSuccess(returnCode)) {
         debugPrint("FFmpeg processing completed successfully.");
         debugPrint('Video successfuly saved');
+        EasyLoading.showSuccess('Video Merged!');
         onSave(outputPath);
+        timmedSessionList = [];
+        notifyListeners();
+        EasyLoading.dismiss();
       } else {
         debugPrint("FFmpeg processing failed.");
         debugPrint('Couldn\'t save the video');
+        EasyLoading.showError('Failed to Merge');
         // onSave(null);
       }
     });

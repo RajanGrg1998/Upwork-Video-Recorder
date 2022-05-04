@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:video_recorder_app/controller/clip_controller.dart';
@@ -17,6 +18,7 @@ class SingleTrimPage extends StatefulWidget {
 
 class _SingleTrimPageState extends State<SingleTrimPage> {
   final Trimmer _trimmer = Trimmer();
+
   double _startValue = 0.0;
   double _endValue = 0.0;
 
@@ -64,17 +66,33 @@ class _SingleTrimPageState extends State<SingleTrimPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        actions: [
-          ElevatedButton(
-            onPressed: _saveVideo,
-            child: Text('Save'),
-          )
-        ],
+      navigationBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.zero,
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            CupertinoIcons.back,
+          ),
+        ),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.only(right: 15),
+          child: Text('Trim'),
+          onPressed: _saveVideo,
+        ),
       ),
-      body: WillPopScope(
+      // appBar: AppBar(
+      //   actions: [
+      //     ElevatedButton(
+      //       onPressed: _saveVideo,
+      //       child: Text('Save'),
+      //     )
+      //   ],
+      // ),
+      child: WillPopScope(
         onWillPop: () async {
           if (Navigator.of(context).userGestureInProgress) {
             return false;
@@ -90,6 +108,7 @@ class _SingleTrimPageState extends State<SingleTrimPage> {
                 backgroundColor: Colors.red,
               ),
             ),
+            SizedBox(height: 30),
             Expanded(
               child: VideoViewer(trimmer: _trimmer),
             ),
@@ -112,7 +131,7 @@ class _SingleTrimPageState extends State<SingleTrimPage> {
                 },
               ),
             ),
-            SizedBox(height: 130),
+            SizedBox(height: 30),
           ],
         ),
       ),

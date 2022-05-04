@@ -22,8 +22,8 @@ class _DemoPageState extends State<DemoPage> {
       appBar: AppBar(
         actions: [
           ElevatedButton(
-            onPressed: () {
-              clipCon.mergeRequest();
+            onPressed: () async {
+              await clipCon.mergeRequest();
             },
             child: Text('Merge'),
           ),

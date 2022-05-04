@@ -20,8 +20,8 @@ class DemoEditor extends StatefulWidget {
 }
 
 class _DemoEditorState extends State<DemoEditor> {
-  final _exportingProgress = ValueNotifier<double>(0.0);
-  final _isExporting = ValueNotifier<bool>(false);
+  // final _exportingProgress = ValueNotifier<double>(0.0);
+  // final _isExporting = ValueNotifier<bool>(false);
   final double height = 60;
 
   bool _exported = false;
@@ -30,25 +30,26 @@ class _DemoEditorState extends State<DemoEditor> {
   @override
   void initState() {
     _controller = VideoEditorController.file(File(widget.path),
-        maxDuration: Duration(seconds: 30))
-      ..initialize().then((_) => setState(() {}));
+        maxDuration: Duration(hours: 1));
+    _controller.initialize();
+    // ..initialize().then((_) => setState(() {}));
     super.initState();
   }
 
   @override
   void dispose() {
-    _exportingProgress.dispose();
-    _isExporting.dispose();
+    // _exportingProgress.dispose();
+    // _isExporting.dispose();
     _controller.dispose();
     super.dispose();
   }
 
   void _exportVideo() async {
-    _isExporting.value = true;
+    // _isExporting.value = true;
 
     await _controller.exportVideo(
       onCompleted: (file) async {
-        _isExporting.value = false;
+        // _isExporting.value = false;
         if (!mounted) return;
         if (file != null) {
           // await GallerySaver.saveVideo(file.path);
@@ -160,20 +161,20 @@ class _DemoEditorState extends State<DemoEditor> {
     );
   }
 
-  String formatter(Duration duration) => [
-        duration.inMinutes.remainder(60).toString().padLeft(2, '0'),
-        duration.inSeconds.remainder(60).toString().padLeft(2, '0')
-      ].join(":");
+  // String formatter(Duration duration) => [
+  //       duration.inMinutes.remainder(60).toString().padLeft(2, '0'),
+  //       duration.inSeconds.remainder(60).toString().padLeft(2, '0')
+  //     ].join(":");
 
   List<Widget> _trimSlider() {
     return [
       AnimatedBuilder(
         animation: _controller.video,
         builder: (_, __) {
-          final duration = _controller.video.value.duration.inSeconds;
-          final pos = _controller.trimPosition * duration;
-          final start = _controller.minTrim * duration;
-          final end = _controller.maxTrim * duration;
+          // final duration = _controller.video.value.duration.inSeconds;
+          // final pos = _controller.trimPosition * duration;
+          // final start = _controller.minTrim * duration;
+          // final end = _controller.maxTrim * duration;
 
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -181,28 +182,7 @@ class _DemoEditorState extends State<DemoEditor> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  formatter(
-                    Duration(
-                      seconds: start.toInt(),
-                    ),
-                  ),
-                ),
-                Text(
-                  formatter(
-                    Duration(
-                      seconds: pos.toInt(),
-                    ),
-                  ),
-                ),
                 // SizedBox(width: 10),
-                Text(
-                  formatter(
-                    Duration(
-                      seconds: end.toInt(),
-                    ),
-                  ),
-                ),
               ],
             ),
           );

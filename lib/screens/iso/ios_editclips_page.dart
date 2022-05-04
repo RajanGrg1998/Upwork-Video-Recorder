@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:video_recorder_app/controller/clip_controller.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trim_editor.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trimmer.dart';
 import 'package:video_recorder_app/screens/iso/ddd.dart';
+import 'package:video_recorder_app/screens/single_trimm_page.dart';
 
 class IOSEditClipPage extends StatelessWidget {
   const IOSEditClipPage({Key? key}) : super(key: key);
@@ -20,7 +23,6 @@ class IOSEditClipPage extends StatelessWidget {
         padding: EdgeInsetsDirectional.zero,
         leading: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(width: 2),
             GestureDetector(
@@ -41,13 +43,15 @@ class IOSEditClipPage extends StatelessWidget {
             )
           ],
         ),
-        trailing: CupertinoButton(
-          padding: EdgeInsets.only(right: 15),
-          child: Text('Merge'),
-          onPressed: () {
-            clipCon.mergeRequest();
-          },
-        ),
+        trailing: clipCon.timmedSessionList.isNotEmpty
+            ? CupertinoButton(
+                padding: EdgeInsets.only(right: 15),
+                child: Text('Merge'),
+                onPressed: () {
+                  clipCon.mergeRequest();
+                },
+              )
+            : null,
       ),
       child: ListView.builder(
         itemCount: clipCon.clippedSessionList.length,
@@ -74,11 +78,18 @@ class CustomSliders extends StatefulWidget {
 
 class _CustomSlidersState extends State<CustomSliders> {
   final Trimmer _trimmer = Trimmer();
+  Timer? _timer;
 
   @override
   void initState() {
     _loadVideo();
     super.initState();
+    EasyLoading.addStatusCallback((status) {
+      print('EasyLoading Status $status');
+      if (status == EasyLoadingStatus.dismiss) {
+        _timer?.cancel();
+      }
+    });
   }
 
   Future<void> _loadVideo() async {
