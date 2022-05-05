@@ -191,8 +191,6 @@ class VideoEditorController extends ChangeNotifier {
       _preferredCropAspectRatio = value;
       notifyListeners();
     } else if (value >= 0) {
-      // TODO : when switching from a preferred aspect ratio to another it keep reducing the crop size
-
       final length = cropStyle.boundariesLength * 4;
       final videoWidth = videoDimension.width;
       final videoHeight = videoDimension.height;

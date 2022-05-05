@@ -8,9 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:video_recorder_app/controller/clip_controller.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trim_editor.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trimmer.dart';
-import 'package:video_recorder_app/screens/edditorsss/videoeditorpage.dart';
-import 'package:video_recorder_app/screens/iso/ddd.dart';
-import 'package:video_recorder_app/screens/single_trimm_page.dart';
+import 'package:video_recorder_app/screens/editor/videoeditorpage.dart';
 
 class IOSEditClipPage extends StatelessWidget {
   const IOSEditClipPage({Key? key}) : super(key: key);

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:helpers/helpers/transition.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_recorder_app/controller/clip_controller.dart';
 
 import '../../helpers/editor/video_editor.dart';
@@ -159,38 +158,6 @@ class _VideoEditorState extends State<VideoEditor> {
               ),
             )
           : const Center(child: CircularProgressIndicator()),
-    );
-  }
-
-  Widget _topNavBar() {
-    return SafeArea(
-      child: SizedBox(
-        height: height,
-        child: Row(
-          children: [
-            Expanded(
-              child: CupertinoButton(
-                onPressed: () =>
-                    _controller.rotate90Degrees(RotateDirection.left),
-                child: const Icon(Icons.rotate_left),
-              ),
-            ),
-            Expanded(
-              child: CupertinoButton(
-                onPressed: () =>
-                    _controller.rotate90Degrees(RotateDirection.right),
-                child: const Icon(Icons.rotate_right),
-              ),
-            ),
-            Expanded(
-              child: CupertinoButton(
-                onPressed: _exportVideo,
-                child: const Text('Trim'),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

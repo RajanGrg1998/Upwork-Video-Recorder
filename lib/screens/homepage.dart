@@ -14,7 +14,6 @@ import 'package:video_recorder_app/constant.dart';
 import 'package:video_recorder_app/controller/clip_controller.dart';
 import 'package:video_recorder_app/controller/lastclip_controller.dart';
 import 'package:video_recorder_app/main.dart';
-import 'package:video_recorder_app/screens/demopage.dart';
 import 'package:video_recorder_app/screens/iso/ios_editclips_page.dart';
 import 'package:video_recorder_app/screens/zoomablewidget.dart';
 
@@ -710,7 +709,3 @@ class _RecordingPageState extends State<RecordingPage>
     );
   }
 }
-
-/// Display a row of toggle to select the camera (or a message if no camera is available).
-
-//save

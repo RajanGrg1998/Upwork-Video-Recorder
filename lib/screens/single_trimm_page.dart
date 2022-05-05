@@ -22,7 +22,7 @@ class _SingleTrimPageState extends State<SingleTrimPage> {
   double _startValue = 0.0;
   double _endValue = 0.0;
 
-  bool _isPlaying = false;
+  bool isPlaying = false;
   bool _progressVisibility = false;
 
   @override
@@ -126,7 +126,7 @@ class _SingleTrimPageState extends State<SingleTrimPage> {
                 },
                 onChangePlaybackState: (value) {
                   setState(() {
-                    _isPlaying = value;
+                    isPlaying = value;
                   });
                 },
               ),
