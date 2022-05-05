@@ -16,6 +16,7 @@ import 'package:video_recorder_app/controller/lastclip_controller.dart';
 import 'package:video_recorder_app/main.dart';
 import 'package:video_recorder_app/screens/demopage.dart';
 import 'package:video_recorder_app/screens/iso/ios_editclips_page.dart';
+import 'package:video_recorder_app/screens/zoomablewidget.dart';
 
 class RecordingPage extends StatefulWidget {
   const RecordingPage({Key? key}) : super(key: key);
@@ -214,7 +215,20 @@ class _RecordingPageState extends State<RecordingPage>
             child: Center(
               child: Stack(
                 children: [
-                  Container(child: CameraPreview(_cameraController!)),
+                  Container(
+                    child: ZoomableWidget(
+                      child: CameraPreview(_cameraController!),
+                      onTapUp: (scaledPoint) {
+                        // _cameraController!.setPointOfInterest(scaledPoint);
+                      },
+                      onZoom: (zoom) {
+                        print('zoom');
+                        if (zoom < 11) {
+                          _cameraController!.zoom(zoom);
+                        }
+                      },
+                    ),
+                  ),
                   saveLoading
                       ? Align(
                           alignment: Alignment.center,
