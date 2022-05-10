@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_better_camera/camera.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
@@ -313,9 +314,9 @@ class _RecordingPageState extends State<RecordingPage>
 
                                     print(
                                         'session: ${clipCon.fullSessionList}');
-                                    // if (clipCon.clippedSessionList.isEmpty) {
-                                    //   return _showMyDialog(context, videoPath!);
-                                    // }
+                                    if (clipCon.clippedSessionList.isEmpty) {
+                                      return _showMyDialog(context, videoPath!);
+                                    }
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -698,8 +699,11 @@ class _RecordingPageState extends State<RecordingPage>
             CupertinoDialogAction(
               child: const Text('Yes'),
               onPressed: () async {
+                EasyLoading.show(status: 'Session Saving...');
                 await GallerySaver.saveVideo(path);
                 showInSnackBar('Recording saved to gallery');
+                EasyLoading.showSuccess('Session saved to Gallery');
+                EasyLoading.dismiss();
                 Navigator.pop(context);
               },
             ),

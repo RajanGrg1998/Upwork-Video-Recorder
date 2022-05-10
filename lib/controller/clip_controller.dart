@@ -75,4 +75,11 @@ class ClipController extends ChangeNotifier {
   void onSave(String filepath) async {
     await GallerySaver.saveVideo(filepath);
   }
+
+  void onFinished() {
+    fullSessionList = [];
+    timmedSessionList = [];
+    clippedSessionList = [];
+    notifyListeners();
+  }
 }

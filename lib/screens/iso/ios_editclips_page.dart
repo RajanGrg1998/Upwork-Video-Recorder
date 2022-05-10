@@ -9,6 +9,7 @@ import 'package:video_recorder_app/controller/clip_controller.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trim_editor.dart';
 import 'package:video_recorder_app/helpers/trimmer/src/trimmer.dart';
 import 'package:video_recorder_app/screens/editor/videoeditorpage.dart';
+import 'package:video_recorder_app/screens/homepage.dart';
 
 class IOSEditClipPage extends StatelessWidget {
   const IOSEditClipPage({Key? key}) : super(key: key);
@@ -26,7 +27,7 @@ class IOSEditClipPage extends StatelessWidget {
             SizedBox(width: 2),
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                _showMyDialog(context);
               },
               child: Icon(
                 CupertinoIcons.back,
@@ -62,6 +63,40 @@ class IOSEditClipPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  Future<void> _showMyDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: const Text('Clear Sessions'),
+          content: Text('Do you want to clear all recorded Sessions'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+                child: const Text('No'),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
+            CupertinoDialogAction(
+              child: const Text('Yes'),
+              onPressed: () async {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecordingPage(),
+                    ),
+                    (route) => false);
+
+                Provider.of<ClipController>(context, listen: false)
+                    .onFinished();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
