@@ -83,15 +83,16 @@ class IOSEditClipPage extends StatelessWidget {
             CupertinoDialogAction(
               child: const Text('Yes'),
               onPressed: () async {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecordingPage(),
-                    ),
-                    (route) => false);
-
+                // Navigator.pushAndRemoveUntil(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => RecordingPage(),
+                //     ),
+                //     (route) => false);
                 Provider.of<ClipController>(context, listen: false)
                     .onFinished();
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
           ],
